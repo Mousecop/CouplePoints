@@ -5,7 +5,8 @@ import {
 	TextInput,
 	Button,
 	StyleSheet,
-	Dimensions
+	Dimensions,
+	AsyncStorage
 } from 'react-native';
 import * as firebase from 'firebase';
 
@@ -14,7 +15,7 @@ const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
 export interface Props {
-	navigation: any;
+	navigation?: any;
 }
 
 export interface State {
@@ -37,13 +38,20 @@ export class Login extends Component<Props, State> {
 		};
 	}
 
-	handleLogin() {
+	handleLogin = () => {
 		firebase
 			.auth()
 			.signInWithEmailAndPassword(this.state.email, this.state.password)
-			.then(data => console.log('Logged in user:', data))
+			.then(async data => {
+				console.log('Logged in user:', data);
+				if (data) {
+					await AsyncStorage.setItem('userToken', data.user.uid);
+					this.props.navigation.navigate('Home');
+				}
+			})
 			.catch(err => console.log('ERROR:', err));
-	}
+		// tslint:disable-next-line:semicolon
+	};
 
 	checkIfFormComplete() {
 		if (this.state.password === '' || this.state.email === '') {
