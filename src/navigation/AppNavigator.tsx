@@ -1,20 +1,22 @@
-import React, { Component } from 'react';
-import { createStackNavigator } from 'react-navigation';
+// import React, { Component } from 'react';
+import { createStackNavigator, createSwitchNavigator } from 'react-navigation';
 
 /* Route Component imports */
 import { Signup } from '../components/Signup/signup';
 import { Login } from '../components/Login/login';
-const RootStack = createStackNavigator(
+import { Home } from '../components/Home/home';
+import { AuthLoading } from '../AuthLoading/AuthLoadingScreen';
+
+const authStack = createStackNavigator({ Login: Login, Signup: Signup });
+const appStack = createStackNavigator({ Home: Home });
+
+export default createSwitchNavigator(
 	{
-		Signup: Signup,
-		Login: Login
+		AuthLoadingScreen: AuthLoading,
+		App: appStack,
+		Auth: authStack
 	},
 	{
-		initialRouteName: 'Login'
+		initialRouteName: 'AuthLoadingScreen'
 	}
 );
-export default class AppNavigator extends Component {
-	render() {
-		return <RootStack />;
-	}
-}
