@@ -3,10 +3,16 @@ import { createStackNavigator } from 'react-navigation';
 
 /* Route Component imports */
 import { Signup } from '../components/Signup/signup';
-
-const RootStack = createStackNavigator({
-	Signup: Signup
-});
+import { Login } from '../components/Login/login';
+const RootStack = createStackNavigator(
+	{
+		Signup: Signup,
+		Login: Login
+	},
+	{
+		initialRouteName: 'Login'
+	}
+);
 export default class AppNavigator extends Component {
 	render() {
 		return <RootStack />;
