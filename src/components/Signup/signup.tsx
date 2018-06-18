@@ -6,10 +6,12 @@ import {
 	Button,
 	StyleSheet,
 	Dimensions,
-	AsyncStorage
+	AsyncStorage,
+	Image,
+	TouchableOpacity
 } from 'react-native';
 import * as firebase from 'firebase';
-
+import { Camera, Permissions, ImagePicker } from 'expo';
 // Get dimensions
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
@@ -20,6 +22,10 @@ export interface Props {
 export interface State {
 	email: string;
 	password: string;
+	firstName: string;
+	lastName: string;
+	profilePicture: string;
+	hasPermissions: any;
 }
 export class Signup extends Component<Props, State> {
 	static navigationOptions = {
@@ -32,8 +38,18 @@ export class Signup extends Component<Props, State> {
 
 	state = {
 		email: '',
-		password: ''
+		password: '',
+		firstName: '',
+		lastName: '',
+		profilePicture: '',
+		hasPermissions: ''
 	};
+
+	async componentDidMount() {
+		const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+		console.log(status);
+		this.setState({ hasPermissions: status === 'granted' });
+	}
 
 	handleSignup() {
 		firebase
@@ -41,10 +57,23 @@ export class Signup extends Component<Props, State> {
 			.createUserWithEmailAndPassword(this.state.email, this.state.password)
 			.then(async data => {
 				console.log('NEW USER DATA:', data);
+				this.sendUserDataToDB(data.user.uid);
 				await AsyncStorage.setItem('userToken', data.user.uid);
 				this.props.navigation.navigate('App');
 			})
 			.catch(err => console.log('ERROR:', err));
+	}
+
+	sendUserDataToDB(userId: any) {
+		firebase
+			.database()
+			.ref('users/' + userId)
+			.set({
+				email: this.state.email,
+				firstName: this.state.firstName,
+				lastName: this.state.lastName,
+				profilePicture: this.state.profilePicture
+			});
 	}
 
 	checkIfFormComplete() {
@@ -54,12 +83,55 @@ export class Signup extends Component<Props, State> {
 		return false;
 	}
 
+	openCameraRoll = async () => {
+		if (this.state.hasPermissions) {
+			await ImagePicker.launchImageLibraryAsync({
+				allowsEditing: true,
+				aspect: [4, 3]
+			}).then(image => {
+				console.log(image);
+				this.setState({ profilePicture: image.uri });
+			});
+		}
+	};
+
 	render() {
 		return (
 			<View style={styles.container}>
 				<Text style={styles.headerText}>Couple Points</Text>
 				<View style={styles.inputContainer}>
-					<View style={styles.emailInputContainer}>
+					<View>
+						<View style={styles.profileImageContainer}>
+							<TouchableOpacity onPress={() => this.openCameraRoll()}>
+								<Image
+									source={
+										this.state.profilePicture
+											? { uri: this.state.profilePicture }
+											: require('../../../assets/images/profile-placeholder.png')
+									}
+									style={styles.profileImage}
+								/>
+								<Text style={{ color: '#fff' }}>Upload your picture</Text>
+							</TouchableOpacity>
+						</View>
+						<View>
+							<TextInput
+								placeholder="First Name"
+								placeholderTextColor="#7492b5"
+								autoCorrect={false}
+								onChangeText={firstName => this.setState({ firstName })}
+								style={styles.input}
+							/>
+						</View>
+						<View>
+							<TextInput
+								placeholder="Last Name"
+								placeholderTextColor="#7492b5"
+								autoCorrect={false}
+								onChangeText={lastName => this.setState({ lastName })}
+								style={styles.input}
+							/>
+						</View>
 						<TextInput
 							placeholder="Email"
 							placeholderTextColor="#7492b5"
@@ -101,7 +173,7 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		alignItems: 'center',
 		flex: 1,
-		padding: 40
+		padding: 30
 	},
 	headerText: {
 		fontSize: 40,
@@ -109,7 +181,8 @@ const styles = StyleSheet.create({
 	},
 	inputContainer: {
 		flex: 0.8,
-		justifyContent: 'center'
+		justifyContent: 'center',
+		marginBottom: 20
 	},
 	emailInputContainer: {
 		marginBottom: 15
@@ -127,5 +200,17 @@ const styles = StyleSheet.create({
 		borderColor: '#fff',
 		padding: 5,
 		width: deviceWidth / 1.3
+	},
+	profileImage: {
+		width: 100,
+		height: 100,
+		borderRadius: 50,
+		alignSelf: 'center',
+		marginBottom: 10
+	},
+	profileImageContainer: {
+		alignSelf: 'center',
+		justifyContent: 'center',
+		marginBottom: 20
 	}
 });
