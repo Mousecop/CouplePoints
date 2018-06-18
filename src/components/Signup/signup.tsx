@@ -93,7 +93,6 @@ export class Signup extends Component<Props, State> {
 				this.setState({ profilePicture: image.uri });
 			});
 		}
-		// tslint:disable-next-line:semicolon
 	};
 
 	render() {
