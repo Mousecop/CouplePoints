@@ -13,18 +13,29 @@ import * as firebase from 'firebase';
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
-export class Login extends Component {
+export interface Props {
+	navigation: any;
+}
+
+export interface State {
+	email: string;
+	password: string;
+}
+
+export class Login extends Component<Props, State> {
 	static navigationOptions = {
 		headerStyle: {
 			backgroundColor: '#81c6ff',
 			borderBottomColor: 'transparent'
 		}
 	};
-
-	state = {
-		email: '',
-		password: ''
-	};
+	constructor(props: Props) {
+		super(props);
+		this.state = {
+			email: '',
+			password: ''
+		};
+	}
 
 	handleLogin() {
 		firebase

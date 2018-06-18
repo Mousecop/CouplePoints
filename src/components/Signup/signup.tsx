@@ -13,7 +13,14 @@ import * as firebase from 'firebase';
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
-export class Signup extends Component {
+export interface Props {
+	navigation: any;
+}
+export interface State {
+	email: string;
+	password: string;
+}
+export class Signup extends Component<Props, State> {
 	static navigationOptions = {
 		headerStyle: {
 			backgroundColor: '#81c6ff',
