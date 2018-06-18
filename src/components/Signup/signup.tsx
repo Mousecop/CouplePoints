@@ -16,7 +16,8 @@ const deviceHeight = Dimensions.get('screen').height;
 export class Signup extends Component {
 	static navigationOptions = {
 		headerStyle: {
-			height: 0
+			backgroundColor: '#81c6ff',
+			borderBottomColor: 'transparent'
 		}
 	};
 
@@ -67,10 +68,11 @@ export class Signup extends Component {
 						/>
 					</View>
 				</View>
-				<View>
+				<View style={styles.button}>
 					<Button
 						title="Sign Up"
 						onPress={() => this.handleSignup()}
+						color="#fff"
 						disabled={this.checkIfFormComplete()}
 					/>
 				</View>
@@ -93,7 +95,7 @@ const styles = StyleSheet.create({
 		color: '#FFF'
 	},
 	inputContainer: {
-		flex: 1,
+		flex: 0.8,
 		justifyContent: 'center'
 	},
 	emailInputContainer: {
@@ -105,5 +107,12 @@ const styles = StyleSheet.create({
 		width: deviceWidth / 1.3,
 		height: deviceHeight / 12,
 		color: '#fff'
+	},
+	button: {
+		borderWidth: 1,
+		borderRadius: 10,
+		borderColor: '#fff',
+		padding: 5,
+		width: deviceWidth / 1.3
 	}
 });
