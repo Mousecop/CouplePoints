@@ -11,7 +11,7 @@ import {
 	TouchableOpacity
 } from 'react-native';
 import * as firebase from 'firebase';
-import { Camera, Permissions, ImagePicker } from 'expo';
+import { Permissions, ImagePicker } from 'expo';
 // Get dimensions
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
@@ -33,7 +33,11 @@ export class Signup extends Component<Props, State> {
 			backgroundColor: '#81c6ff',
 			borderBottomColor: 'transparent'
 		},
-		title: 'Signup'
+		title: 'Signup',
+		headerTitleStyle: {
+			color: '#FFF',
+			fontSize: 20
+		}
 	};
 
 	state = {
