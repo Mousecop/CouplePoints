@@ -38,9 +38,13 @@
 		"preset": "jest-expo"
 	},
 	"dependencies": {
+		"@types/firebase": "^3.2.1",
+		"@types/react-navigation": "^2.0.5",
 		"eslint": "^4.19.1",
 		"expo": "^27.0.1",
+		"firebase": "^5.0.4",
 		"react": "16.3.1",
-		"react-native": "~0.55.2"
+		"react-native": "~0.55.2",
+		"react-navigation": "^2.3.1"
 	}
 }
