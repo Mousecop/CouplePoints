@@ -1,0 +1,109 @@
+import React, { Component } from 'react';
+import {
+	View,
+	Text,
+	TextInput,
+	Button,
+	StyleSheet,
+	Dimensions
+} from 'react-native';
+import * as firebase from 'firebase';
+
+// Get dimensions
+const deviceWidth = Dimensions.get('screen').width;
+const deviceHeight = Dimensions.get('screen').height;
+
+export class Signup extends Component {
+	static navigationOptions = {
+		headerStyle: {
+			height: 0
+		}
+	};
+
+	state = {
+		email: '',
+		password: ''
+	};
+
+	handleSignup() {
+		firebase
+			.auth()
+			.createUserWithEmailAndPassword(this.state.email, this.state.password)
+			.then(data => console.log('NEW USER DATA:', data))
+			.catch(err => console.log('ERROR:', err));
+	}
+
+	checkIfFormComplete() {
+		if (this.state.password === '' || this.state.email === '') {
+			return true;
+		}
+		return false;
+	}
+
+	render() {
+		return (
+			<View style={styles.container}>
+				<Text style={styles.headerText}>Couple Points</Text>
+				<View style={styles.inputContainer}>
+					<View style={styles.emailInputContainer}>
+						<TextInput
+							placeholder="Email"
+							placeholderTextColor="#7492b5"
+							onChangeText={email => {
+								this.setState({ email });
+							}}
+							autoCapitalize="none"
+							value={this.state.email}
+							style={styles.input}
+						/>
+					</View>
+					<View>
+						<TextInput
+							placeholder="Password"
+							placeholderTextColor="#7492b5"
+							secureTextEntry
+							onChangeText={password => this.setState({ password })}
+							style={styles.input}
+						/>
+					</View>
+				</View>
+				<View>
+					<Button
+						title="Sign Up"
+						onPress={() => this.handleSignup()}
+						disabled={this.checkIfFormComplete()}
+					/>
+				</View>
+			</View>
+		);
+	}
+}
+
+const styles = StyleSheet.create({
+	container: {
+		backgroundColor: '#81c6ff',
+		height: '100%',
+		flexDirection: 'column',
+		alignItems: 'center',
+		flex: 1,
+		padding: 40
+	},
+	headerText: {
+		fontSize: 40,
+		color: '#FFF'
+	},
+	inputContainer: {
+		flex: 1,
+		justifyContent: 'center'
+	},
+	emailInputContainer: {
+		marginBottom: 15
+	},
+	input: {
+		borderBottomColor: '#fff',
+		borderBottomWidth: 1,
+		width: deviceWidth / 1.3,
+		height: deviceHeight / 12,
+		color: '#fff'
+	}
+});
