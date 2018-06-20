@@ -6,7 +6,6 @@ import {
 	Dimensions,
 	TouchableOpacity
 } from 'react-native';
-import { LinearGradient } from 'expo';
 
 // Get Dimensions
 const deviceHeight = Dimensions.get('screen').height;
@@ -22,7 +21,7 @@ export class NoGameFound extends Component<Props> {
 	}
 	render() {
 		return (
-			<LinearGradient colors={['#FF4E50', '#F9D423']} style={{ flex: 1 }}>
+			<View style={styles.contianer}>
 				<View style={styles.contianer}>
 					<View style={styles.textSection}>
 						<Text style={styles.text}>
@@ -45,7 +44,7 @@ export class NoGameFound extends Component<Props> {
 						</TouchableOpacity>
 					</View>
 				</View>
-			</LinearGradient>
+			</View>
 		);
 	}
 }

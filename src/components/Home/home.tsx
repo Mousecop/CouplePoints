@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 // import * as firebase from 'firebase';
 import { NoGameFound } from '../shared/noGameFound';
 import { View, StyleSheet } from 'react-native';
+import { LinearGradient } from 'expo';
+
 export interface Props {
 	navigation?: any;
 }
@@ -24,9 +26,9 @@ export class Home extends Component<Props> {
 	}
 	render() {
 		return (
-			<View style={styles.container}>
+			<LinearGradient colors={['#FF4E50', '#F9D423']} style={styles.container}>
 				<NoGameFound navigation={this.props.navigation} />
-			</View>
+			</LinearGradient>
 			// <Button
 			// 	title="Signout"
 			// 	onPress={async () => {
@@ -41,7 +43,6 @@ export class Home extends Component<Props> {
 
 const styles = StyleSheet.create({
 	container: {
-		flex: 1,
-		backgroundColor: '#fff'
+		flex: 1
 	}
 });
