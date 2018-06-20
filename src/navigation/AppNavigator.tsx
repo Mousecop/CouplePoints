@@ -6,13 +6,13 @@ import { Login } from '../components/Login/login';
 import { Home } from '../components/Home/home';
 import { AuthLoading } from '../AuthLoading/AuthLoadingScreen';
 import { JoinGame } from '../components/JoinGame/joinGame';
-import { InitialScreen } from '../components/shared/initalScreen';
+import { NoGameFound } from '../components/shared/noGameFound';
 import { CreateGame } from '../components/CreateGame/createGame';
 
 const authStack = createStackNavigator({ Login: Login, Signup: Signup });
 const appStack = createStackNavigator({
 	Home: Home,
-	initalScreen: InitialScreen,
+	initalScreen: NoGameFound,
 	Join: JoinGame,
 	Create: CreateGame
 });
