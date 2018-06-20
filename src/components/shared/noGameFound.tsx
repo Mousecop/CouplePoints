@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
 	View,
-	Button,
 	Text,
 	StyleSheet,
 	Dimensions,
 	TouchableOpacity
 } from 'react-native';
 import { LinearGradient } from 'expo';
+
 // Get Dimensions
 const deviceHeight = Dimensions.get('screen').height;
 // const deviceWidth = Dimensions.get('screen').width;
