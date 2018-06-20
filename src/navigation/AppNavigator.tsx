@@ -1,9 +1,10 @@
-// import React, { Component } from 'react';
+import React from 'react';
 import {
 	createStackNavigator,
 	createSwitchNavigator,
 	createBottomTabNavigator
 } from 'react-navigation';
+import { Ionicons } from '@expo/vector-icons';
 /* Route Component imports */
 import { Signup } from '../components/Signup/signup';
 import { Login } from '../components/Login/login';
@@ -24,9 +25,28 @@ const noGameFoundStack = createStackNavigator({
 	Create: CreateGame
 });
 
-const appTab = createBottomTabNavigator({
-	Home: homeStack
-});
+const appTab = createBottomTabNavigator(
+	{
+		Home: homeStack
+	},
+	{
+		navigationOptions: ({ navigation }) => ({
+			tabBarIcon: ({ focused, tintColor }) => {
+				const { routeName } = navigation.state;
+				let iconName;
+				if (routeName === 'Home') {
+					iconName = `ios-home${focused ? '' : '-outline'}`;
+				}
+
+				return <Ionicons name={iconName} size={25} color={tintColor} />;
+			}
+		}),
+		tabBarOptions: {
+			activeTintColor: '#FF4E50',
+			inactiveTintColor: 'gray'
+		}
+	}
+);
 
 export default createSwitchNavigator(
 	{
