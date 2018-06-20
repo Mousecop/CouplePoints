@@ -6,7 +6,7 @@ import {
 	Dimensions,
 	TouchableOpacity
 } from 'react-native';
-
+import { LinearGradient } from 'expo';
 // Get Dimensions
 const deviceHeight = Dimensions.get('screen').height;
 // const deviceWidth = Dimensions.get('screen').width;
@@ -16,12 +16,24 @@ export interface Props {
 }
 
 export class NoGameFound extends Component<Props> {
+	static navigationOptions = {
+		title: 'Home',
+		headerStyle: {
+			backgroundColor: '#FF4E50',
+			borderBottomColor: 'transparent'
+		},
+		headerTitleStyle: {
+			color: '#FFF',
+			fontSize: 20
+		}
+	};
+
 	constructor(props: Props) {
 		super(props);
 	}
 	render() {
 		return (
-			<View style={styles.contianer}>
+			<LinearGradient colors={['#FF4E50', '#F9D423']} style={styles.contianer}>
 				<View style={styles.contianer}>
 					<View style={styles.textSection}>
 						<Text style={styles.text}>
@@ -44,13 +56,14 @@ export class NoGameFound extends Component<Props> {
 						</TouchableOpacity>
 					</View>
 				</View>
-			</View>
+			</LinearGradient>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
 	contianer: {
+		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignContent: 'center',
