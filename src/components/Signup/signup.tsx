@@ -60,7 +60,6 @@ export class Signup extends Component<Props, State> {
 			.auth()
 			.createUserWithEmailAndPassword(this.state.email, this.state.password)
 			.then(async data => {
-				console.log('NEW USER DATA:', data);
 				this.sendUserDataToDB(data.user.uid);
 				await AsyncStorage.setItem('userToken', data.user.uid);
 				this.props.navigation.navigate('App');
@@ -76,7 +75,8 @@ export class Signup extends Component<Props, State> {
 				email: this.state.email,
 				firstName: this.state.firstName,
 				lastName: this.state.lastName,
-				profilePicture: this.state.profilePicture
+				profilePicture: this.state.profilePicture,
+				points: 0
 			});
 	}
 
@@ -92,7 +92,7 @@ export class Signup extends Component<Props, State> {
 			await ImagePicker.launchImageLibraryAsync({
 				allowsEditing: true,
 				aspect: [4, 3]
-			}).then(image => {
+			}).then((image: any) => {
 				console.log(image);
 				this.setState({ profilePicture: image.uri });
 			});
