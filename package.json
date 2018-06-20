@@ -39,6 +39,7 @@
 	},
 	"dependencies": {
 		"@types/expo": "^27.0.2",
+		"@types/expo__vector-icons": "^6.2.2",
 		"@types/firebase": "^3.2.1",
 		"@types/react-navigation": "^2.0.5",
 		"eslint": "^4.19.1",
