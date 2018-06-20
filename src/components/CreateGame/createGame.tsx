@@ -73,7 +73,6 @@ export class CreateGame extends Component<Props, State> {
 	};
 
 	handleAddRulePress = () => {
-		console.log('RULE STATE', this.state.rules);
 		this.setState({
 			rules: [
 				...this.state.rules,
