@@ -6,10 +6,14 @@ import {
 	Dimensions,
 	TextInput,
 	TouchableOpacity,
-	ScrollView
+	ScrollView,
+	AsyncStorage
 } from 'react-native';
 import { LinearGradient } from 'expo';
 import { Ionicons } from '@expo/vector-icons';
+import * as firebase from 'firebase';
+
+// Get dimensions
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
 
@@ -18,7 +22,11 @@ export interface State {
 	rules: { id: number; rule: string }[];
 }
 
-export class CreateGame extends Component<State> {
+export interface Props {
+	navigation: any;
+}
+
+export class CreateGame extends Component<Props, State> {
 	static navigationOptions = {
 		title: 'Create a game',
 		headerStyle: {
@@ -51,10 +59,13 @@ export class CreateGame extends Component<State> {
 			return (
 				<View style={styles.pointInputContainer} key={rule.id}>
 					<Text>
-						{rule.id.toString()} point<Text>{rule.id > 1 ? 's' : ''}</Text>:
+						{rule.id} point<Text>{rule.id > 1 ? 's' : ''}</Text>:
 					</Text>
 					<View style={styles.pointInput}>
-						<TextInput value={rule.rule} />
+						<TextInput
+							value={rule.rule}
+							onChangeText={text => this.handleRuleText(rule.id, text)}
+						/>
 					</View>
 				</View>
 			);
@@ -69,6 +80,49 @@ export class CreateGame extends Component<State> {
 				{ id: this.state.rules.length + 1, rule: '' }
 			]
 		});
+	};
+
+	handleRuleText = (id: number, value: string) => {
+		let rules = [...this.state.rules];
+		let index = rules.findIndex(el => el.id === id);
+		rules[index] = { id: id, rule: value };
+		this.setState({ rules: rules });
+	};
+
+	handleButtonDisable = (): boolean => {
+		return this.state.rules.every(el => el.rule === '');
+	};
+
+	createClick = async () => {
+		if (this.state.rules && this.state.gameName) {
+			const userToken = await AsyncStorage.getItem('userToken').then(result => {
+				return result;
+			});
+			const newGameKey = firebase
+				.database()
+				.ref()
+				.child('games')
+				.push().key;
+
+			firebase
+				.database()
+				.ref('games/' + newGameKey)
+				.set({
+					gameName: this.state.gameName,
+					rules: this.state.rules,
+					players: [userToken]
+				})
+				.then(() => {
+					firebase
+						.database()
+						.ref('users/' + userToken)
+						.update({
+							game: newGameKey
+						});
+					this.props.navigation.navigate('Home');
+				})
+				.catch(err => console.log('CREATE ERROR:', err));
+		}
 	};
 
 	render() {
@@ -110,6 +164,13 @@ export class CreateGame extends Component<State> {
 							</ScrollView>
 						</View>
 					</View>
+					<TouchableOpacity
+						disabled={this.handleButtonDisable()}
+						onPress={() => this.createClick()}>
+						<View style={styles.createButton}>
+							<Text style={styles.buttonText}>Create</Text>
+						</View>
+					</TouchableOpacity>
 				</View>
 			</LinearGradient>
 		);
@@ -130,9 +191,9 @@ const styles = StyleSheet.create({
 		height: deviceHeight / 7,
 		width: deviceWidth / 1.1,
 		shadowColor: '#88abad',
-		shadowRadius: 10,
-		shadowOpacity: 2,
-		shadowOffset: { width: 5, height: 5 },
+		shadowRadius: 5,
+		shadowOpacity: 1,
+		shadowOffset: { width: 2, height: 2 },
 		padding: 20
 	},
 	gameNameText: {
@@ -149,9 +210,9 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		width: deviceWidth / 1.1,
 		shadowColor: '#88abad',
-		shadowRadius: 10,
-		shadowOpacity: 2,
-		shadowOffset: { width: 5, height: 5 },
+		shadowRadius: 5,
+		shadowOpacity: 1,
+		shadowOffset: { width: 2, height: 2 },
 		padding: 20,
 		maxHeight: deviceHeight / 1.8
 	},
@@ -165,5 +226,19 @@ const styles = StyleSheet.create({
 		borderBottomColor: '#0ABFBC',
 		width: deviceWidth / 1.3,
 		marginLeft: 8
+	},
+	createButton: {
+		height: 38,
+		marginTop: 25,
+		borderWidth: 2,
+		borderColor: '#FFF',
+		alignItems: 'center',
+		justifyContent: 'center',
+		borderRadius: 13
+	},
+	buttonText: {
+		color: '#fff',
+		fontWeight: 'bold',
+		fontSize: 18
 	}
 });
