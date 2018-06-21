@@ -14,7 +14,7 @@ import { JoinGame } from '../components/JoinGame/joinGame';
 import { NoGameFound } from '../components/shared/noGameFound';
 import { CreateGame } from '../components/CreateGame/createGame';
 import { HomeLoading } from '../AuthLoading/HomeLoadingScreen';
-
+import { Rules } from '../components/shared/rules';
 const authStack = createStackNavigator({ Login: Login, Signup: Signup });
 const homeStack = createStackNavigator({
 	Home: Home
@@ -27,7 +27,8 @@ const noGameFoundStack = createStackNavigator({
 
 const appTab = createBottomTabNavigator(
 	{
-		Home: homeStack
+		Home: homeStack,
+		Rules: Rules
 	},
 	{
 		navigationOptions: ({ navigation }) => ({
@@ -36,6 +37,8 @@ const appTab = createBottomTabNavigator(
 				let iconName;
 				if (routeName === 'Home') {
 					iconName = `ios-home${focused ? '' : '-outline'}`;
+				} else if (routeName === 'Rules') {
+					iconName = `ios-list-box${focused ? '' : '-outline'}`;
 				}
 
 				return <Ionicons name={iconName} size={25} color={tintColor} />;
