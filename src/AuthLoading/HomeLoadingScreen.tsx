@@ -32,7 +32,8 @@ export class HomeLoading extends Component<Props> {
 
 	render() {
 		return (
-			<View>
+			<View
+				style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
 				<ActivityIndicator />
 				<StatusBar barStyle="default" />
 			</View>
