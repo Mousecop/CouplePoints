@@ -25,10 +25,14 @@ const noGameFoundStack = createStackNavigator({
 	Create: CreateGame
 });
 
+const rulesStack = createStackNavigator({
+	Rules: Rules
+});
+
 const appTab = createBottomTabNavigator(
 	{
 		Home: homeStack,
-		Rules: Rules
+		Rules: rulesStack
 	},
 	{
 		navigationOptions: ({ navigation }) => ({
