@@ -16,18 +16,23 @@ export class HomeLoading extends Component<Props> {
 		const userToken = await AsyncStorage.getItem('userToken').then(
 			result => result
 		);
-		firebase
-			.database()
-			.ref('users/' + userToken)
-			.once('value')
-			.then(snapshot => {
-				let user = snapshot.val();
-				if (!user.game) {
-					this.props.navigation.navigate('NoGameFound');
-				} else {
-					this.props.navigation.navigate('Home');
-				}
-			});
+
+		console.log('userToken', userToken);
+
+		if (userToken) {
+			firebase
+				.database()
+				.ref('users/' + userToken)
+				.once('value')
+				.then(snapshot => {
+					let user = snapshot.val();
+					if (!user.game) {
+						this.props.navigation.navigate('NoGameFound');
+					} else {
+						this.props.navigation.navigate('Home');
+					}
+				});
+		}
 	};
 
 	render() {
