@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import * as firebase from 'firebase';
 import { Permissions, ImagePicker } from 'expo';
+import { RNS3 } from 'react-native-aws3';
+import * as env from '../../env';
 // Get dimensions
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
@@ -27,6 +29,25 @@ export interface State {
 	profilePicture: string;
 	hasPermissions: any;
 }
+
+export interface S3 {
+	keyPrefix: string;
+	bucket: string;
+	region: string;
+	accessKey: string;
+	secretKey: string;
+	succesActionStatus: number;
+}
+
+// Setup S3 options
+const s3Options: S3 = {
+	keyPrefix: 'upload/',
+	bucket: 'couple-points',
+	region: 'us-east-1',
+	accessKey: env.AWS_ACCESS,
+	secretKey: env.AWS_SECRET,
+	succesActionStatus: 201
+};
 export class Signup extends Component<Props, State> {
 	static navigationOptions = {
 		headerStyle: {
@@ -55,37 +76,26 @@ export class Signup extends Component<Props, State> {
 		this.setState({ hasPermissions: status === 'granted' });
 	}
 
-	handleSignup() {
-		firebase
+	handleSignup = async () => {
+		await firebase
 			.auth()
 			.createUserWithEmailAndPassword(this.state.email, this.state.password)
 			.then(async data => {
-				this.sendUserDataToDB(data.user.uid);
 				await AsyncStorage.setItem('userToken', data.user.uid);
+				await this.handleUploadToS3(data.user.uid);
+			})
+			.then(() => {
 				this.props.navigation.navigate('App');
 			})
 			.catch(err => console.log('ERROR:', err));
-	}
+	};
 
-	sendUserDataToDB(userId: any) {
-		firebase
-			.database()
-			.ref('users/' + userId)
-			.set({
-				email: this.state.email,
-				firstName: this.state.firstName,
-				lastName: this.state.lastName,
-				profilePicture: this.state.profilePicture,
-				points: 0
-			});
-	}
-
-	checkIfFormComplete() {
+	checkIfFormComplete = () => {
 		if (this.state.password === '' || this.state.email === '') {
 			return true;
 		}
 		return false;
-	}
+	};
 
 	openCameraRoll = async () => {
 		if (this.state.hasPermissions) {
@@ -97,6 +107,31 @@ export class Signup extends Component<Props, State> {
 				this.setState({ profilePicture: image.uri });
 			});
 		}
+	};
+
+	handleUploadToS3 = async (userId: any) => {
+		const file = {
+			uri: this.state.profilePicture,
+			name: `profile-image-${userId}.png`,
+			type: 'image/png'
+		};
+		await RNS3.put(file, s3Options).then((response: any) => {
+			if (response.status !== 201) {
+				throw new Error('Failed to upload to S3');
+			}
+			console.log('S3 RESPONSE', response.body);
+
+			firebase
+				.database()
+				.ref('users/' + userId)
+				.set({
+					email: this.state.email,
+					firstName: this.state.firstName,
+					lastName: this.state.lastName,
+					profilePicture: response.body.postResponse.location,
+					points: 0
+				});
+		});
 	};
 
 	render() {
