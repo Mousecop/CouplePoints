@@ -16,6 +16,7 @@
 		"typescript": "^2.8.3"
 	},
 	"main": "./node_modules/react-native-scripts/build/bin/crna-entry.js",
+	"types": "app.d.ts",
 	"scripts": {
 		"start": "react-native-scripts start",
 		"eject": "react-native-scripts eject",
@@ -47,6 +48,7 @@
 		"firebase": "^5.0.4",
 		"react": "16.3.1",
 		"react-native": "~0.55.2",
+		"react-native-aws3": "^0.0.8",
 		"react-native-circular-progress": "^0.2.0",
 		"react-navigation": "^2.3.1"
 	}
