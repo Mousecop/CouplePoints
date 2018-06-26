@@ -17,8 +17,6 @@ export class HomeLoading extends Component<Props> {
 			result => result
 		);
 
-		console.log('userToken', userToken);
-
 		if (userToken) {
 			firebase
 				.database()
