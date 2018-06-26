@@ -10,7 +10,7 @@
 		"sourceMap": true,
 		"experimentalDecorators": true,
 		"preserveConstEnums": true,
-		// "allowJs": true,
+		"allowJs": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"noImplicitReturns": true,
@@ -24,6 +24,6 @@
 		"node_modules/typescript/lib/lib.es6.d.ts"
 	],
 	"types": ["react", "react-dom", "react-native"],
-	"exclude": ["build", "node_modules", "jest.config.js", "App.js"],
+	"exclude": ["build", "node_modules", "jest.config.js", "App.js", "env.tsx"],
 	"compileOnSave": false
 }
