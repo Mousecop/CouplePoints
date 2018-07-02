@@ -16,27 +16,59 @@ import { CreateGame } from '../components/CreateGame/createGame';
 import { HomeLoading } from '../AuthLoading/HomeLoadingScreen';
 import { Rules } from '../components/shared/rules';
 import { Profile } from '../components/Profile/profile';
+import { SubmitPoint } from '../SubmitPoint/submitPoint';
 
 const authStack = createStackNavigator({ Login: Login, Signup: Signup });
-const homeStack = createStackNavigator({
-	Home: Home
-});
+const homeStack = createStackNavigator(
+	{
+		Home: {
+			screen: Home,
+			navigationOptions: () => ({
+				headerBackTitle: 'Back'
+			})
+		},
+		Submit: SubmitPoint
+	},
+	{ mode: 'modal' }
+);
 const noGameFoundStack = createStackNavigator({
 	noGameFound: NoGameFound,
 	Join: JoinGame,
 	Create: CreateGame
 });
 
-const rulesStack = createStackNavigator({
-	Rules: Rules
-});
-const profileStack = createStackNavigator({
-	Profile: Profile
+const rulesStack = createStackNavigator(
+	{
+		Rules: {
+			screen: Rules,
+			navigationOptions: () => ({
+				headerBackTitle: 'Back'
+			})
+		},
+		Submit: SubmitPoint
+	},
+	{ mode: 'modal' }
+);
+const profileStack = createStackNavigator(
+	{
+		Profile: {
+			screen: Profile,
+			navigationOptions: () => ({
+				headerBackTitle: 'Back'
+			})
+		},
+		Submit: SubmitPoint
+	},
+	{ mode: 'modal' }
+);
+const submitPointStack = createStackNavigator({
+	Submit: SubmitPoint
 });
 
 const appTab = createBottomTabNavigator(
 	{
 		Home: homeStack,
+		Submit: submitPointStack,
 		Rules: rulesStack,
 		Profile: profileStack
 	},
@@ -51,6 +83,8 @@ const appTab = createBottomTabNavigator(
 					iconName = `ios-list-box${focused ? '' : '-outline'}`;
 				} else if (routeName === 'Profile') {
 					iconName = `ios-contact${focused ? '' : '-outline'}`;
+				} else if (routeName === 'Submit') {
+					iconName = `ios-add-circle${focused ? '' : '-outline'}`;
 				}
 
 				return <Ionicons name={iconName} size={25} color={tintColor} />;
