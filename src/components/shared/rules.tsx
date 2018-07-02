@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 
+const deviceHeight = Dimensions.get('screen').height;
 export class Rules extends Component {
 	static navigationOptions = {
 		title: 'Rules',
@@ -17,7 +18,7 @@ export class Rules extends Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<View>
+				<ScrollView style={{ height: deviceHeight * 2 }}>
 					<Text style={[styles.hightlightTextGreen, styles.largeText]}>
 						Introduction
 					</Text>
@@ -40,17 +41,43 @@ export class Rules extends Component {
 						</Text>
 						<Text>
 							For example: Let’s say that I randomly got my girlfriend flowers.
-							She then would award me a point. I could then “Cash In” my 3 total
+							She then could award me a point. I could then “Cash In” my 3 total
 							points to ,let’s say, make out. I could have also given a really
 							nice, genuine compliment. That could also be considered a point.
 							{'\n'}
 							{'\n'}
 						</Text>
 						<Text>
-							The possibilities are endless and y’all create the rules! ;)
+							The possibilities are endless and y’all create the rules!
 						</Text>
 					</Text>
-				</View>
+					<View style={styles.ruleSection}>
+						<Text style={[styles.hightlightTextGreen, styles.largeText]}>
+							Rules
+						</Text>
+						<Text style={styles.introSentence}>
+							<Text>
+								<Text style={styles.hightlightTextRed}>1:</Text> The person who
+								gives the point, dictates whether or not the act of kindness was
+								worthy.
+								{'\n'}
+								{'\n'}
+							</Text>
+							<Text>
+								<Text style={styles.hightlightTextRed}>2:</Text> If you “Cash
+								In”, you cash in all of your points. You may not split up your
+								points. It’s all or nothing!
+								{'\n'}
+								{'\n'}
+							</Text>
+							<Text>
+								<Text style={styles.hightlightTextRed}>3:</Text> If you “Cash
+								In”, both parties have to honor the rule you setup. So be
+								careful with what you commit to. ;)
+							</Text>
+						</Text>
+					</View>
+				</ScrollView>
 			</View>
 		);
 	}
@@ -79,5 +106,11 @@ const styles = StyleSheet.create({
 	},
 	introSentence: {
 		fontSize: 18
+	},
+	ruleSection: {
+		marginTop: 30
+	},
+	ruleText: {
+		marginVertical: '15'
 	}
 });
