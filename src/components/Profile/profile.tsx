@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity, Text, AsyncStorage } from 'react-native';
 import * as firebase from 'firebase';
 
-export class Profile extends Component {
+export interface Props {
+	navigation?: any;
+}
+export class Profile extends Component<Props> {
 	handleSignout = async () => {
 		await AsyncStorage.removeItem('userToken');
-		firebase.auth().signOut();
+		firebase
+			.auth()
+			.signOut()
+			.then(() => this.props.navigation.navigate('Auth'));
 	};
 
 	render() {
