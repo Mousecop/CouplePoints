@@ -76,7 +76,6 @@ export class Home extends Component<Props, State> {
 	};
 
 	getPlayerInfo = (game: any): any => {
-		console.log('GAME:', game.players);
 		game.players.forEach((playerId: any) => {
 			firebase
 				.database()
