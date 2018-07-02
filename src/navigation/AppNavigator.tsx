@@ -15,7 +15,7 @@ import { NoGameFound } from '../components/shared/noGameFound';
 import { CreateGame } from '../components/CreateGame/createGame';
 import { HomeLoading } from '../AuthLoading/HomeLoadingScreen';
 import { Rules } from '../components/shared/rules';
-import { Profile } from '../Profile/profile';
+import { Profile } from '../components/Profile/profile';
 
 const authStack = createStackNavigator({ Login: Login, Signup: Signup });
 const homeStack = createStackNavigator({
