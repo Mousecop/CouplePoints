@@ -51,14 +51,15 @@ const s3Options: S3 = {
 export class Signup extends Component<Props, State> {
 	static navigationOptions = {
 		headerStyle: {
-			backgroundColor: '#81c6ff',
+			backgroundColor: '#FF4E50',
 			borderBottomColor: 'transparent'
 		},
-		title: 'Signup',
+		title: 'Couple Points',
 		headerTitleStyle: {
 			color: '#FFF',
 			fontSize: 20
-		}
+		},
+		headerTintColor: '#fff'
 	};
 
 	state = {
@@ -137,7 +138,7 @@ export class Signup extends Component<Props, State> {
 	render() {
 		return (
 			<View style={styles.container}>
-				<Text style={styles.headerText}>Couple Points</Text>
+				<Text style={styles.headerText}>Sign Up</Text>
 				<View style={styles.inputContainer}>
 					<View>
 						<View style={styles.profileImageContainer}>
@@ -156,7 +157,7 @@ export class Signup extends Component<Props, State> {
 						<View>
 							<TextInput
 								placeholder="First Name"
-								placeholderTextColor="#7492b5"
+								placeholderTextColor="#fff"
 								autoCorrect={false}
 								onChangeText={firstName => this.setState({ firstName })}
 								style={styles.input}
@@ -165,7 +166,7 @@ export class Signup extends Component<Props, State> {
 						<View>
 							<TextInput
 								placeholder="Last Name"
-								placeholderTextColor="#7492b5"
+								placeholderTextColor="#fff"
 								autoCorrect={false}
 								onChangeText={lastName => this.setState({ lastName })}
 								style={styles.input}
@@ -173,10 +174,11 @@ export class Signup extends Component<Props, State> {
 						</View>
 						<TextInput
 							placeholder="Email"
-							placeholderTextColor="#7492b5"
+							placeholderTextColor="#fff"
 							onChangeText={email => {
 								this.setState({ email });
 							}}
+							keyboardType="email-address"
 							autoCapitalize="none"
 							value={this.state.email}
 							style={styles.input}
@@ -185,7 +187,7 @@ export class Signup extends Component<Props, State> {
 					<View>
 						<TextInput
 							placeholder="Password"
-							placeholderTextColor="#7492b5"
+							placeholderTextColor="#fff"
 							secureTextEntry
 							onChangeText={password => this.setState({ password })}
 							style={styles.input}
@@ -207,12 +209,12 @@ export class Signup extends Component<Props, State> {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: '#81c6ff',
+		backgroundColor: '#FF4E50',
 		height: '100%',
 		flexDirection: 'column',
 		alignItems: 'center',
 		flex: 1,
-		padding: 30
+		padding: 20
 	},
 	headerText: {
 		fontSize: 40,
@@ -234,7 +236,7 @@ const styles = StyleSheet.create({
 		color: '#fff'
 	},
 	button: {
-		borderWidth: 1,
+		borderWidth: 2,
 		borderRadius: 10,
 		borderColor: '#fff',
 		padding: 5,
