@@ -68,6 +68,7 @@ export class Home extends Component<Props, State> {
 					.once('value')
 					.then(gameSnapshot => {
 						let game = gameSnapshot.val();
+
 						this.setState({ game: game }, () => this.getPlayerInfo(game));
 					})
 					.catch(err => console.log(err));
@@ -75,6 +76,7 @@ export class Home extends Component<Props, State> {
 	};
 
 	getPlayerInfo = (game: any): any => {
+		console.log('GAME:', game.players);
 		game.players.forEach((playerId: any) => {
 			firebase
 				.database()
