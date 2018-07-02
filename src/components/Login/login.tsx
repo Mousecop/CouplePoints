@@ -26,7 +26,7 @@ export interface State {
 export class Login extends Component<Props, State> {
 	static navigationOptions = {
 		headerStyle: {
-			backgroundColor: '#81c6ff',
+			backgroundColor: '#FF4E50',
 			borderBottomColor: 'transparent'
 		}
 	};
@@ -46,7 +46,7 @@ export class Login extends Component<Props, State> {
 				console.log('Logged in user:', data);
 				if (data) {
 					await AsyncStorage.setItem('userToken', data.user.uid);
-					this.props.navigation.navigate('Home');
+					this.props.navigation.navigate('App');
 				}
 			})
 			.catch(err => console.log('ERROR:', err));
@@ -68,7 +68,7 @@ export class Login extends Component<Props, State> {
 					<View style={styles.emailInputContainer}>
 						<TextInput
 							placeholder="Email"
-							placeholderTextColor="#7492b5"
+							placeholderTextColor="#fff"
 							onChangeText={email => {
 								this.setState({ email });
 							}}
@@ -80,7 +80,7 @@ export class Login extends Component<Props, State> {
 					<View>
 						<TextInput
 							placeholder="Password"
-							placeholderTextColor="#7492b5"
+							placeholderTextColor="#fff"
 							secureTextEntry
 							onChangeText={password => this.setState({ password })}
 							style={styles.input}
@@ -96,9 +96,11 @@ export class Login extends Component<Props, State> {
 					/>
 				</View>
 				<View>
-					<Text style={{ color: '#8193b3' }}>
+					<Text style={{ color: '#FFF' }}>
 						New User?{' '}
-						<Text onPress={() => this.props.navigation.navigate('Signup')}>
+						<Text
+							onPress={() => this.props.navigation.navigate('Signup')}
+							style={{ color: '#81c6ff' }}>
 							Create a new account
 						</Text>
 					</Text>
@@ -110,7 +112,7 @@ export class Login extends Component<Props, State> {
 
 const styles = StyleSheet.create({
 	container: {
-		backgroundColor: '#81c6ff',
+		backgroundColor: '#FF4E50',
 		height: '100%',
 		flexDirection: 'column',
 		alignItems: 'center',
@@ -137,7 +139,7 @@ const styles = StyleSheet.create({
 		fontSize: 20
 	},
 	button: {
-		borderWidth: 1,
+		borderWidth: 2,
 		borderRadius: 10,
 		borderColor: '#fff',
 		padding: 5,
