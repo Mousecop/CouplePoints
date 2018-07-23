@@ -8,47 +8,40 @@ import { Ionicons } from '@expo/vector-icons';
 /* Route Component imports */
 import { Signup } from '../components/Signup/signup';
 import { Login } from '../components/Login/login';
-import { Home } from '../components/Home/home';
+import Home from '../components/Home/home';
 import { AuthLoading } from '../AuthLoading/AuthLoadingScreen';
 import { JoinGame } from '../components/JoinGame/joinGame';
 import { NoGameFound } from '../components/shared/noGameFound';
 import { CreateGame } from '../components/CreateGame/createGame';
-import { HomeLoading } from '../AuthLoading/HomeLoadingScreen';
+import HomeLoading from '../AuthLoading/HomeLoadingScreen';
 import { Rules } from '../components/shared/rules';
 import { Profile } from '../components/Profile/profile';
-import { SubmitPoint } from '../SubmitPoint/submitPoint';
+import SubmitPoint from '../components/SubmitPoint/submitPoint';
 
 const authStack = createStackNavigator({ Login: Login, Signup: Signup });
-const homeStack = createStackNavigator(
-	{
-		Home: {
-			screen: Home,
-			navigationOptions: () => ({
-				headerBackTitle: 'Back'
-			})
-		},
-		Submit: SubmitPoint
-	},
-	{ mode: 'modal' }
-);
+const homeStack = createStackNavigator({
+	Home: {
+		screen: Home,
+		navigationOptions: () => ({
+			headerBackTitle: 'Back'
+		})
+	}
+});
 const noGameFoundStack = createStackNavigator({
 	noGameFound: NoGameFound,
 	Join: JoinGame,
 	Create: CreateGame
 });
 
-const rulesStack = createStackNavigator(
-	{
-		Rules: {
-			screen: Rules,
-			navigationOptions: () => ({
-				headerBackTitle: 'Back'
-			})
-		},
-		Submit: SubmitPoint
+const rulesStack = createStackNavigator({
+	Rules: {
+		screen: Rules,
+		navigationOptions: () => ({
+			headerBackTitle: 'Back'
+		})
 	},
-	{ mode: 'modal' }
-);
+	Submit: SubmitPoint
+});
 const profileStack = createStackNavigator(
 	{
 		Profile: {
@@ -61,14 +54,10 @@ const profileStack = createStackNavigator(
 	},
 	{ mode: 'modal' }
 );
-const submitPointStack = createStackNavigator({
-	Submit: SubmitPoint
-});
 
 const appTab = createBottomTabNavigator(
 	{
 		Home: homeStack,
-		Submit: submitPointStack,
 		Rules: rulesStack,
 		Profile: profileStack
 	},
@@ -83,8 +72,6 @@ const appTab = createBottomTabNavigator(
 					iconName = `ios-list-box${focused ? '' : '-outline'}`;
 				} else if (routeName === 'Profile') {
 					iconName = `ios-contact${focused ? '' : '-outline'}`;
-				} else if (routeName === 'Submit') {
-					iconName = `ios-add-circle${focused ? '' : '-outline'}`;
 				}
 
 				return <Ionicons name={iconName} size={25} color={tintColor} />;
