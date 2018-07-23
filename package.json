@@ -43,6 +43,7 @@
 		"@types/expo__vector-icons": "^6.2.2",
 		"@types/firebase": "^3.2.1",
 		"@types/react-navigation": "^2.0.5",
+		"@types/react-redux": "^6.0.4",
 		"eslint": "^4.19.1",
 		"expo": "^27.0.1",
 		"firebase": "^5.0.4",
@@ -50,6 +51,10 @@
 		"react-native": "~0.55.2",
 		"react-native-aws3": "^0.0.8",
 		"react-native-circular-progress": "^0.2.0",
-		"react-navigation": "^2.3.1"
+		"react-native-modal": "^6.4.0",
+		"react-navigation": "^2.3.1",
+		"react-redux": "^5.0.7",
+		"redux": "^4.0.0",
+		"redux-thunk": "^2.3.0"
 	}
 }
