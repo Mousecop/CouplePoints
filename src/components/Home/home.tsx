@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import * as firebase from 'firebase';
+import { connect } from 'react-redux';
 import {
 	Text,
 	StyleSheet,
-	AsyncStorage,
 	View,
 	ActivityIndicator,
 	Image,
@@ -12,12 +11,22 @@ import {
 	TouchableOpacity
 } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import SubmitPoint from '../SubmitPoint/submitPoint';
+import { BaseState } from '../../reducers/reducer';
+import * as Actions from '../../actions/action';
+import * as types from '../../types/type';
 // Get dimensions
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
 
 export interface Props {
 	navigation?: any;
+	getCurrentUser: Function;
+	getPlayerTwo: Function;
+	getGame: Function;
+	game: types.Game;
+	currentUser: types.User;
+	playerTwo: types.User;
 }
 
 export interface State {
@@ -26,119 +35,90 @@ export interface State {
 	players: any;
 }
 
-export class Home extends Component<Props, State> {
+export interface DispatchProps {
+	getCurrentUser: Function;
+	getPlayerTwo: Function;
+	getGame: Function;
+}
+
+export class Home extends Component<Props> {
 	static navigationOptions = {
 		title: 'Couple Points',
 		headerStyle: {
 			backgroundColor: '#FF4E50',
-			paddingBottom: 10
+			paddingBottom: 10,
+			paddingRight: 34
 		},
 		headerTitleStyle: {
 			color: '#FFF',
 			fontSize: 26
-		}
+		},
+		headerRight: <SubmitPoint />
 	};
 
 	constructor(props: Props) {
 		super(props);
-
-		this.state = {
-			user: undefined,
-			game: undefined,
-			players: []
-		};
-
-		this.initalizeGame();
 	}
 
-	initalizeGame = async () => {
-		const userToken = await AsyncStorage.getItem('userToken').then(
-			result => result
-		);
-		await firebase
-			.database()
-			.ref('users/' + userToken)
-			.once('value')
-			.then(snapshot => {
-				let user = snapshot.val();
-				this.setState({ user });
-				firebase
-					.database()
-					.ref('games/' + user.game)
-					.once('value')
-					.then(gameSnapshot => {
-						let game = gameSnapshot.val();
-
-						this.setState({ game: game }, () => this.getPlayerInfo(game));
-					})
-					.catch(err => console.log(err));
-			});
-	};
-
-	getPlayerInfo = (game: any): any => {
-		game.players.forEach((playerId: any) => {
-			firebase
-				.database()
-				.ref('users/' + playerId)
-				.once('value')
-				.then(snapshot => {
-					let player = snapshot.val();
-					this.setState({ players: [...this.state.players, player] });
-				});
-		});
-	};
-
 	renderPlayer = () => {
-		return this.state.players.map((player: any, key: number) => {
-			return (
-				<View key={key} style={{ alignItems: 'center' }}>
-					<View style={styles.profilePicture}>
-						<AnimatedCircularProgress
-							fill={(player.points / this.state.game.rules.length) * 100}
-							size={170}
-							width={3}
-							tintColor="#FF4E4E"
-							rotation={0}>
-							{() => {
-								return (
-									<View>
-										<Image
-											source={{ uri: player.profilePicture }}
-											style={{
-												height: 160,
-												width: 160,
-												borderRadius: 80
-											}}
-										/>
-										<View style={styles.imageOverlay}>
-											<Text
+		const players = [this.props.currentUser, this.props.playerTwo];
+		if (this.props.game) {
+			return players.map((player: types.User, key: number) => {
+				const fillAmount =
+					(player.points / this.props.game.rules.length) * 100 || 0;
+				console.log('FILL AMOUNT', fillAmount);
+				return (
+					<View key={key} style={{ alignItems: 'center' }}>
+						<View style={styles.profilePicture}>
+							<AnimatedCircularProgress
+								fill={fillAmount}
+								size={170}
+								width={3}
+								tintColor="#FF4E4E"
+								rotation={0}>
+								{() => {
+									return (
+										<View>
+											<Image
+												source={{ uri: player.profilePicture }}
 												style={{
-													color: '#FFF',
-													fontSize: 24,
-													alignSelf: 'center',
-													justifyContent: 'center',
-													flex: 1,
-													fontWeight: 'bold'
-												}}>
-												{player.points}
-											</Text>
+													height: 160,
+													width: 160,
+													borderRadius: 80
+												}}
+											/>
+											<View style={styles.imageOverlay}>
+												<Text
+													style={{
+														color: '#FFF',
+														fontSize: 24,
+														alignSelf: 'center',
+														justifyContent: 'center',
+														flex: 1,
+														fontWeight: 'bold'
+													}}>
+													{player.points}
+												</Text>
+											</View>
 										</View>
-									</View>
-								);
-							}}
-						</AnimatedCircularProgress>
-					</View>
+									);
+								}}
+							</AnimatedCircularProgress>
+						</View>
 
-					{/* <Text style={styles.playerNameText}>
+						{/* <Text style={styles.playerNameText}>
 						{player.firstName} {player.lastName}
 					</Text> */}
-				</View>
-			);
-		});
+					</View>
+				);
+			});
+		} else {
+			return '';
+		}
 	};
 
 	renderPoints = () => {
-		return this.state.game.rules.map((rule: any, key: number) => {
+		return this.props.game.rules.map((rule: types.Rule, key: number) => {
 			return (
 				<View key={key} style={styles.pointListContainer}>
 					<Text style={styles.ruleText}>
@@ -151,11 +131,12 @@ export class Home extends Component<Props, State> {
 	};
 
 	render() {
-		if (this.state.game && this.state.players && this.state.user) {
+		console.log('GAME:', this.props.game);
+		if (this.props.game && this.props.currentUser) {
 			return (
 				<View style={styles.container}>
 					<View style={{ marginBottom: 40 }}>
-						<Text style={styles.gameNameText}>{this.state.game.gameName}</Text>
+						<Text style={styles.gameNameText}>{this.props.game.gameName}</Text>
 					</View>
 					<View style={styles.profilePictureContainer}>
 						{this.renderPlayer()}
@@ -191,6 +172,29 @@ export class Home extends Component<Props, State> {
 		}
 	}
 }
+
+const mapStateToProps = (state: BaseState) => ({
+	currentUser: state.currentUser,
+	playerTwo: state.playerTwo,
+	game: state.game
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+	getCurrentUser() {
+		dispatch(Actions.getCurrentUser());
+	},
+	getPlayerTwo() {
+		dispatch(Actions.getPlayeTwo());
+	},
+	getGame() {
+		dispatch(Actions.getGame());
+	}
+});
+
+export default connect<BaseState, DispatchProps>(
+	mapStateToProps,
+	mapDispatchToProps
+)(Home);
 
 const styles = StyleSheet.create({
 	container: {
