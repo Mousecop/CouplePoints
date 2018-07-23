@@ -1,7 +1,9 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import AppNavigator from './navigation/AppNavigator';
-
+import { AsyncStorage } from 'react-native';
+import { Provider } from 'react-redux';
+import store from './store';
 const firebaseConfig = {
 	apiKey: 'AIzaSyCP8JDSIlp26GvTIkJe84FmFNitp1-p864',
 	authDomain: 'couplepoints-2bdbe.firebaseapp.com',
@@ -14,6 +16,11 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 export default class App extends React.Component {
 	render() {
-		return <AppNavigator />;
+		// AsyncStorage.clear();
+		return (
+			<Provider store={store}>
+				<AppNavigator />
+			</Provider>
+		);
 	}
 }
