@@ -11,10 +11,12 @@ import {
 	TouchableOpacity
 } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { Notifications } from 'expo';
 import SubmitPoint from '../SubmitPoint/submitPoint';
 import { BaseState } from '../../reducers/reducer';
 import * as Actions from '../../actions/action';
 import * as types from '../../types/type';
+import Modal from 'react-native-modal';
 // Get dimensions
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
@@ -30,9 +32,8 @@ export interface Props {
 }
 
 export interface State {
-	user: any;
-	game: any;
-	players: any;
+	notification: any;
+	isModalVisible: boolean;
 }
 
 export interface DispatchProps {
@@ -41,7 +42,7 @@ export interface DispatchProps {
 	getGame: Function;
 }
 
-export class Home extends Component<Props> {
+export class Home extends Component<Props, State> {
 	static navigationOptions = {
 		title: 'Couple Points',
 		headerStyle: {
@@ -58,11 +59,29 @@ export class Home extends Component<Props> {
 
 	constructor(props: Props) {
 		super(props);
+
+		this.state = {
+			notification: {},
+			isModalVisible: false
+		};
 	}
+
+	componentDidMount() {
+		if (this.props.currentUser) {
+			Notifications.addListener(this._handleNotification);
+		}
+	}
+
+	_handleNotification = (notification: any) => {
+		this.setState({
+			notification: notification,
+			isModalVisible: true
+		});
+	};
 
 	renderPlayer = () => {
 		const players = [this.props.currentUser, this.props.playerTwo];
-		if (this.props.game) {
+		if (this.props.game && this.props.playerTwo) {
 			return players.map((player: types.User, key: number) => {
 				const fillAmount =
 					(player.points / this.props.game.rules.length) * 100 || 0;
@@ -71,7 +90,7 @@ export class Home extends Component<Props> {
 					<View key={key} style={{ alignItems: 'center' }}>
 						<View style={styles.profilePicture}>
 							<AnimatedCircularProgress
-								fill={fillAmount}
+								fill={100}
 								size={170}
 								width={3}
 								tintColor="#FF4E4E"
@@ -105,15 +124,15 @@ export class Home extends Component<Props> {
 								}}
 							</AnimatedCircularProgress>
 						</View>
-
-						{/* <Text style={styles.playerNameText}>
-						{player.firstName} {player.lastName}
-					</Text> */}
 					</View>
 				);
 			});
 		} else {
-			return '';
+			return (
+				<View style={styles.container}>
+					<ActivityIndicator />
+				</View>
+			);
 		}
 	};
 
@@ -130,11 +149,57 @@ export class Home extends Component<Props> {
 		});
 	};
 
+	setModalVisible = (visible: boolean) => {
+		this.setState({ isModalVisible: visible });
+	};
+
+	renderNotification = () => {
+		return (
+			<View style={{}}>
+				<Modal
+					isVisible={this.state.isModalVisible}
+					onSwipe={() => {
+						this.setModalVisible(!this.state.isModalVisible);
+					}}
+					swipeDirection="up"
+					onBackdropPress={() => {
+						this.setModalVisible(!this.state.isModalVisible);
+					}}
+					style={{
+						justifyContent: 'flex-start',
+						marginTop: 15,
+						alignItems: 'center'
+					}}
+					animationOutTiming={500}
+					backdropOpacity={0.5}>
+					<View
+						style={{
+							backgroundColor: '#fff',
+							height: deviceHeight / 9.5,
+							width: deviceWidth / 1.1,
+							padding: 15,
+							borderRadius: 10,
+							justifyContent: 'space-evenly'
+						}}>
+						<Text style={{ fontSize: 16, paddingBottom: 10 }}>
+							You have received a point from {this.props.playerTwo.firstName}{' '}
+							{this.props.playerTwo.lastName}!
+						</Text>
+						<Text style={{ fontSize: 14 }}>
+							For: {this.state.notification.data.data.trim()}
+						</Text>
+					</View>
+				</Modal>
+			</View>
+		);
+	};
+
 	render() {
 		console.log('GAME:', this.props.game);
 		if (this.props.game && this.props.currentUser) {
 			return (
 				<View style={styles.container}>
+					{this.state.isModalVisible && this.renderNotification()}
 					<View style={{ marginBottom: 40 }}>
 						<Text style={styles.gameNameText}>{this.props.game.gameName}</Text>
 					</View>
@@ -184,7 +249,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 		dispatch(Actions.getCurrentUser());
 	},
 	getPlayerTwo() {
-		dispatch(Actions.getPlayeTwo());
+		dispatch(Actions.getPlayerTwo());
 	},
 	getGame() {
 		dispatch(Actions.getGame());
