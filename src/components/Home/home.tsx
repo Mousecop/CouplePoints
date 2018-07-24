@@ -83,49 +83,52 @@ export class Home extends Component<Props, State> {
 		const players = [this.props.currentUser, this.props.playerTwo];
 		if (this.props.game && this.props.playerTwo) {
 			return players.map((player: types.User, key: number) => {
-				const fillAmount =
-					(player.points / this.props.game.rules.length) * 100 || 0;
-				console.log('FILL AMOUNT', fillAmount);
-				return (
-					<View key={key} style={{ alignItems: 'center' }}>
-						<View style={styles.profilePicture}>
-							<AnimatedCircularProgress
-								fill={100}
-								size={170}
-								width={3}
-								tintColor="#FF4E4E"
-								rotation={0}>
-								{() => {
-									return (
-										<View>
-											<Image
-												source={{ uri: player.profilePicture }}
-												style={{
-													height: 160,
-													width: 160,
-													borderRadius: 80
-												}}
-											/>
-											<View style={styles.imageOverlay}>
-												<Text
+				if (this.props.game.rules.length > 0) {
+					const fillAmount =
+						(player.points / this.props.game.rules.length) * 100;
+					return (
+						<View key={key} style={{ alignItems: 'center' }}>
+							<View style={styles.profilePicture}>
+								<AnimatedCircularProgress
+									fill={fillAmount ? fillAmount : 0}
+									size={170}
+									width={3}
+									tintColor="#FF4E4E"
+									rotation={0}>
+									{() => {
+										return (
+											<View>
+												<Image
+													source={{ uri: player.profilePicture }}
 													style={{
-														color: '#FFF',
-														fontSize: 24,
-														alignSelf: 'center',
-														justifyContent: 'center',
-														flex: 1,
-														fontWeight: 'bold'
-													}}>
-													{player.points}
-												</Text>
+														height: 160,
+														width: 160,
+														borderRadius: 80
+													}}
+												/>
+												<View style={styles.imageOverlay}>
+													<Text
+														style={{
+															color: '#FFF',
+															fontSize: 24,
+															alignSelf: 'center',
+															justifyContent: 'center',
+															flex: 1,
+															fontWeight: 'bold'
+														}}>
+														{player.points}
+													</Text>
+												</View>
 											</View>
-										</View>
-									);
-								}}
-							</AnimatedCircularProgress>
+										);
+									}}
+								</AnimatedCircularProgress>
+							</View>
 						</View>
-					</View>
-				);
+					);
+				} else {
+					return <Text key={key}>Error</Text>;
+				}
 			});
 		} else {
 			return (
