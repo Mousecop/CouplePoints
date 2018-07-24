@@ -14,7 +14,8 @@ const initalState: BaseState = {
 		lastName: '',
 		points: 0,
 		profilePicture: '',
-		playerId: ''
+		playerId: '',
+		pushToken: ''
 	},
 	playerTwo: {
 		email: '',
@@ -23,7 +24,8 @@ const initalState: BaseState = {
 		lastName: '',
 		points: 0,
 		profilePicture: '',
-		playerId: ''
+		playerId: '',
+		pushToken: ''
 	},
 	game: {
 		gameName: '',
@@ -45,11 +47,6 @@ export const reducer = (state = initalState, action: any) => {
 		case actions.GET_GAME:
 			console.log('ACTION GAME:', action.game);
 			return { ...state, game: action.game };
-		case actions.SUBMIT_POINT:
-			return {
-				...state,
-				playerTwo: { ...state.playerTwo, points: state.playerTwo.points + 1 }
-			};
 		default:
 			return state;
 	}
