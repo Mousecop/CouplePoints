@@ -120,7 +120,8 @@ export class SubmitPoint extends Component<Props, State> {
 								<View style={styles.reasonInputView}>
 									<TextInput
 										multiline={true}
-										numberOfLines={4}
+										numberOfLines={1}
+										maxLength={120}
 										placeholder="Reason for point"
 										editable={true}
 										autoCorrect={true}
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
 		borderBottomColor: 'grey',
 		borderLeftWidth: 1,
 		borderLeftColor: 'grey',
-		height: deviceHeight / 5,
+		height: deviceHeight / 7,
 		width: deviceWidth / 1.3,
 		padding: 5
 	},
