@@ -19,4 +19,5 @@ export interface User {
 	points: number;
 	profilePicture: string;
 	playerId: string;
+	pushToken: string;
 }
