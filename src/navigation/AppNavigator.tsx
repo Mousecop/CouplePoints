@@ -7,7 +7,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 /* Route Component imports */
 import { Signup } from '../components/Signup/signup';
-import { Login } from '../components/Login/login';
+import Login from '../components/Login/login';
 import Home from '../components/Home/home';
 import { AuthLoading } from '../AuthLoading/AuthLoadingScreen';
 import { JoinGame } from '../components/JoinGame/joinGame';
