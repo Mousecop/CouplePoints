@@ -67,6 +67,7 @@ export class SubmitPoint extends Component<Props, State> {
 			this.props.submitPoint(
 				this.props.game.gameId,
 				this.props.playerTwo.playerId,
+				this.props.playerTwo.pushToken,
 				this.state.reason
 			);
 			this.setModalVisible(!this.state.isModalVisible);
@@ -155,8 +156,13 @@ const mapStateToProps = (state: BaseState) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-	submitPoint(gameId: any, receivingPlayerId: any, reason: string) {
-		dispatch(actions.submitPoint(gameId, receivingPlayerId, reason));
+	submitPoint(
+		gameId: any,
+		receivingPlayerId: any,
+		pushToken: string,
+		reason: string
+	) {
+		dispatch(actions.submitPoint(gameId, receivingPlayerId, pushToken, reason));
 	}
 });
 
