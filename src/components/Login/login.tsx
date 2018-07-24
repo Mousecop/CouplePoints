@@ -8,19 +8,35 @@ import {
 	Dimensions,
 	AsyncStorage
 } from 'react-native';
+import { connect } from 'react-redux';
+import * as actions from '../../actions/action';
+import * as types from '../../types/type';
 import * as firebase from 'firebase';
-
+import { BaseState } from '../../reducers/reducer';
+import { registerForPushNotificationsAsync } from '../shared/registerForPushNotificationsAsync';
 // Get dimensions
 const deviceWidth = Dimensions.get('screen').width;
 const deviceHeight = Dimensions.get('screen').height;
 
 export interface Props {
 	navigation?: any;
+	currentUser: types.User;
+	playerTwo: types.User;
+	handleNotification: Function;
 }
 
 export interface State {
 	email: string;
 	password: string;
+}
+
+export interface DispatchProps {
+	handleNotification: Function;
+}
+
+export interface StateProps {
+	currentUser: types.User;
+	playerTwo: types.User;
 }
 
 export class Login extends Component<Props, State> {
@@ -43,14 +59,13 @@ export class Login extends Component<Props, State> {
 			.auth()
 			.signInWithEmailAndPassword(this.state.email, this.state.password)
 			.then(async data => {
-				console.log('Logged in user:', data);
 				if (data) {
 					await AsyncStorage.setItem('userToken', data.user.uid);
+					registerForPushNotificationsAsync(data.user.uid);
 					this.props.navigation.navigate('App');
 				}
 			})
 			.catch(err => console.log('ERROR:', err));
-		// tslint:disable-next-line:semicolon
 	};
 
 	checkIfFormComplete() {
@@ -109,6 +124,13 @@ export class Login extends Component<Props, State> {
 		);
 	}
 }
+
+const mapStateToProps = (state: BaseState) => ({
+	currentUser: state.currentUser,
+	playerTwo: state.playerTwo
+});
+
+export default connect<StateProps, DispatchProps>(mapStateToProps)(Login);
 
 const styles = StyleSheet.create({
 	container: {
