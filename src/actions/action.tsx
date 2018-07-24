@@ -9,8 +9,7 @@ export const getCurrentUser = () => async (dispatch: any) => {
 	firebase
 		.database()
 		.ref('users/' + userToken)
-		.once('value')
-		.then(snapshot => {
+		.on('value', snapshot => {
 			const user = snapshot.val();
 			if (user) {
 				return dispatch(getCurrentUserSucess({ ...user, playeId: userToken }));
@@ -19,7 +18,7 @@ export const getCurrentUser = () => async (dispatch: any) => {
 };
 
 // Have to use current user to find other player info in the same game
-export const getPlayeTwo = () => async (dispatch: any) => {
+export const getPlayerTwo = () => async (dispatch: any) => {
 	const userToken = await AsyncStorage.getItem('userToken').then(
 		result => result
 	);
@@ -46,8 +45,7 @@ export const getPlayeTwo = () => async (dispatch: any) => {
 					firebase
 						.database()
 						.ref('users/' + playerTwoId)
-						.once('value')
-						.then(snapshot => {
+						.on('value', snapshot => {
 							const playerTwo = snapshot.val();
 							return dispatch(
 								getPlayerTwoSucess({ ...playerTwo, playerId: playerTwoId })
@@ -85,12 +83,13 @@ export const getGame = () => async (dispatch: any) => {
 export const submitPoint = (
 	gameId: any,
 	receivingPlayerId: any,
+	playerTwoPushToken: any,
 	reason: string
 ) => (dispatch: any) => {
 	firebase
 		.database()
 		.ref('games/' + gameId + '/points')
-		.push(reason.trim())
+		.push(reason)
 		.then(() => {
 			firebase
 				.database()
@@ -101,10 +100,28 @@ export const submitPoint = (
 					firebase
 						.database()
 						.ref('users/' + receivingPlayerId)
-						.update({ points: user.points + 1 });
+						.update({ points: user.points + 1 })
+						.then(() => {
+							fetch('https://exp.host/--/api/v2/push/send', {
+								method: 'POST',
+								headers: {
+									Accept: 'application/json',
+									'Accept-Encoding': 'gzip, deflate',
+									'Content-Type': 'application/json'
+								},
+								body: JSON.stringify({
+									to: playerTwoPushToken,
+									badge: 1,
+									title: 'You just received a point!',
+									body: `${reason}`,
+									data: { data: reason },
+									priority: 'high'
+								})
+							});
+						});
 				})
 				.then(() => {
-					dispatch(submitPointSucess());
+					dispatch(submitPointSucess(reason));
 				});
 		});
 };
@@ -125,6 +142,7 @@ export const getGameSuccess = (game: Object) => ({
 	game
 });
 
-export const submitPointSucess = () => ({
-	type: actionType.SUBMIT_POINT
+export const submitPointSucess = (data: any) => ({
+	type: actionType.SUBMIT_POINT,
+	data
 });
