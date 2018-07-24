@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch: any) => ({
 		dispatch(Actions.getCurrentUser());
 	},
 	getPlayerTwo() {
-		dispatch(Actions.getPlayeTwo());
+		dispatch(Actions.getPlayerTwo());
 	},
 	getGame() {
 		dispatch(Actions.getGame());
