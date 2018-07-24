@@ -16,7 +16,7 @@ import SubmitPoint from '../SubmitPoint/submitPoint';
 import { BaseState } from '../../reducers/reducer';
 import * as Actions from '../../actions/action';
 import * as types from '../../types/type';
-import Modal from 'react-native-modal';
+import { NotificationModal } from '../shared/notification-modal';
 // Get dimensions
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
@@ -33,7 +33,8 @@ export interface Props {
 
 export interface State {
 	notification: any;
-	isModalVisible: boolean;
+	isNotificationModalVisible: boolean;
+	isCashinModalVisible: boolean;
 }
 
 export interface DispatchProps {
@@ -48,7 +49,7 @@ export class Home extends Component<Props, State> {
 		headerStyle: {
 			backgroundColor: '#FF4E50',
 			paddingBottom: 10,
-			paddingRight: 34
+			paddingHorizontal: 34
 		},
 		headerTitleStyle: {
 			color: '#FFF',
@@ -62,7 +63,8 @@ export class Home extends Component<Props, State> {
 
 		this.state = {
 			notification: {},
-			isModalVisible: false
+			isNotificationModalVisible: false,
+			isCashinModalVisible: false
 		};
 	}
 
@@ -75,7 +77,7 @@ export class Home extends Component<Props, State> {
 	_handleNotification = (notification: any) => {
 		this.setState({
 			notification: notification,
-			isModalVisible: true
+			isNotificationModalVisible: true
 		});
 	};
 
@@ -152,49 +154,10 @@ export class Home extends Component<Props, State> {
 		});
 	};
 
-	setModalVisible = (visible: boolean) => {
-		this.setState({ isModalVisible: visible });
-	};
-
-	renderNotification = () => {
-		return (
-			<View style={{}}>
-				<Modal
-					isVisible={this.state.isModalVisible}
-					onSwipe={() => {
-						this.setModalVisible(!this.state.isModalVisible);
-					}}
-					swipeDirection="up"
-					onBackdropPress={() => {
-						this.setModalVisible(!this.state.isModalVisible);
-					}}
-					style={{
-						justifyContent: 'flex-start',
-						marginTop: 15,
-						alignItems: 'center'
-					}}
-					animationOutTiming={500}
-					backdropOpacity={0.5}>
-					<View
-						style={{
-							backgroundColor: '#fff',
-							height: deviceHeight / 9.5,
-							width: deviceWidth / 1.1,
-							padding: 15,
-							borderRadius: 10,
-							justifyContent: 'space-evenly'
-						}}>
-						<Text style={{ fontSize: 16, paddingBottom: 10 }}>
-							You have received a point from {this.props.playerTwo.firstName}{' '}
-							{this.props.playerTwo.lastName}!
-						</Text>
-						<Text style={{ fontSize: 14 }}>
-							For: {this.state.notification.data.data.trim()}
-						</Text>
-					</View>
-				</Modal>
-			</View>
-		);
+	setNotificationModalVisible = () => {
+		this.setState({
+			isNotificationModalVisible: !this.state.isNotificationModalVisible
+		});
 	};
 
 	render() {
@@ -202,7 +165,14 @@ export class Home extends Component<Props, State> {
 		if (this.props.game && this.props.currentUser) {
 			return (
 				<View style={styles.container}>
-					{this.state.isModalVisible && this.renderNotification()}
+					{this.state.isNotificationModalVisible && (
+						<NotificationModal
+							reason={this.state.notification.data.data}
+							playerTwo={this.props.playerTwo}
+							isVisible={this.state.isNotificationModalVisible}
+							closeModal={this.setNotificationModalVisible}
+						/>
+					)}
 					<View style={{ marginBottom: 40 }}>
 						<Text style={styles.gameNameText}>{this.props.game.gameName}</Text>
 					</View>
