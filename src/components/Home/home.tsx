@@ -189,6 +189,7 @@ export class Home extends Component<Props, State> {
 
 	render() {
 		if (this.props.game && this.props.currentUser) {
+			console.log('NOTIFICATION:', this.state.notification.data);
 			return (
 				<View style={styles.container}>
 					{this.state.isNotificationModalVisible && (
@@ -197,6 +198,7 @@ export class Home extends Component<Props, State> {
 							closeModal={this.setNotificationModalVisible}
 							reason={this.state.notification.data.data}
 							notificationMode={this.state.notification.data.mode}
+							cashInPlayerPoints={this.state.notification.data.points}
 						/>
 					)}
 
