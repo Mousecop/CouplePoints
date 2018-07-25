@@ -15,7 +15,6 @@ export interface Props {
 
 export const CashInModal = (props: Props) => {
 	let { rule, isVisible, closeModal, cashInConfirm } = props;
-	console.log('RULE', rule);
 	return (
 		<View>
 			<Modal
