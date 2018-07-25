@@ -115,7 +115,7 @@ export const submitPoint = (
 									badge: 1,
 									title: 'You just received a point!',
 									body: `${reason}`,
-									data: { data: reason },
+									data: { data: reason, mode: 'submitPoint' },
 									priority: 'high'
 								})
 							});
@@ -131,7 +131,7 @@ export const cashIn = (
 ) => (dispatch: any) => {
 	// User cashes in, need to update firebase with 0 points for currentUser,
 	// notify playerTwo of Cash IN details
-	dispatch(cashInSuccess());
+
 	console.log('CASH IN ACTION', currentPlayer);
 	firebase
 		.database()
@@ -150,10 +150,11 @@ export const cashIn = (
 					badge: 1,
 					title: `${currentPlayer.firstName} just cashed in!`,
 					body: `${reason.rule}`,
-					data: { data: reason.rule },
+					data: { data: reason.rule, mode: 'cashIn' },
 					priority: 'high'
 				})
 			});
+			dispatch(cashInNotificationMode('cashIn'));
 		});
 };
 
@@ -180,4 +181,14 @@ export const submitPointSucess = (data: any) => ({
 
 export const cashInSuccess = () => ({
 	type: actionType.CASH_IN
+});
+
+export const submitNotificationMode = (mode: any) => ({
+	type: actionType.SUBMIT_NOTIFICATION_MODE,
+	mode
+});
+
+export const cashInNotificationMode = (mode: any) => ({
+	type: actionType.CASH_IN_NOTIFICATION_MODE,
+	mode
 });
