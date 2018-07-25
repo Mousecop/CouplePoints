@@ -4,6 +4,7 @@ export interface BaseState {
 	currentUser: types.User;
 	playerTwo: types.User;
 	game: types.Game;
+	notificationMode: string;
 }
 
 const initalState: BaseState = {
@@ -33,7 +34,8 @@ const initalState: BaseState = {
 		points: [],
 		rules: [],
 		gameId: ''
-	}
+	},
+	notificationMode: 'cashIn'
 };
 
 export const reducer = (state = initalState, action: any) => {
@@ -47,6 +49,10 @@ export const reducer = (state = initalState, action: any) => {
 		case actions.GET_GAME:
 			console.log('ACTION GAME:', action.game);
 			return { ...state, game: action.game };
+		case actions.SUBMIT_POINT:
+			return { ...state, notificationMode: 'submitPoint' };
+		case actions.CASH_IN:
+			return { ...state, notificationMode: 'cashIn' };
 		default:
 			return state;
 	}
