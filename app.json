@@ -4,8 +4,8 @@
 		"name": "Couple Points",
 		"slug": "couple-points",
 		"privacy": "public",
-		"platform": "ios",
-		"version": 1,
+		"platforms": ["ios"],
+		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/images/cp-icon.png",
 		"splash": {
