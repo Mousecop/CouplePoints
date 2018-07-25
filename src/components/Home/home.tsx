@@ -16,8 +16,9 @@ import SubmitPoint from '../SubmitPoint/submitPoint';
 import { BaseState } from '../../reducers/reducer';
 import * as Actions from '../../actions/action';
 import * as types from '../../types/type';
-import { NotificationModal } from '../shared/notification-modal';
+import NotificationModal from '../shared/notification-modal';
 import { CashInModal } from '../shared/cashIn-modal';
+
 // Get dimensions
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
@@ -32,12 +33,14 @@ export interface Props {
 	currentUser: types.User;
 	playerTwo: types.User;
 	notificationMode: string;
+	setCashInNotificationMode: any;
 }
 
 export interface State {
 	notification: any;
 	isNotificationModalVisible: boolean;
 	isCashinModalVisible: boolean;
+	error: string;
 }
 
 export interface DispatchProps {
@@ -67,7 +70,8 @@ export class Home extends Component<Props, State> {
 		this.state = {
 			notification: {},
 			isNotificationModalVisible: false,
-			isCashinModalVisible: false
+			isCashinModalVisible: false,
+			error: ''
 		};
 	}
 
@@ -132,7 +136,11 @@ export class Home extends Component<Props, State> {
 						</View>
 					);
 				} else {
-					return <Text key={key}>Error</Text>;
+					return (
+						<View style={styles.container} key={key}>
+							<ActivityIndicator />
+						</View>
+					);
 				}
 			});
 		} else {
@@ -180,18 +188,15 @@ export class Home extends Component<Props, State> {
 	};
 
 	render() {
-		console.log('GAME:', this.props.game);
 		if (this.props.game && this.props.currentUser) {
 			return (
 				<View style={styles.container}>
 					{this.state.isNotificationModalVisible && (
 						<NotificationModal
-							reason={this.state.notification.data.data}
-							playerTwo={this.props.playerTwo}
-							currentUser={this.props.currentUser}
 							isVisible={this.state.isNotificationModalVisible}
 							closeModal={this.setNotificationModalVisible}
-							notificationMode={this.props.notificationMode}
+							reason={this.state.notification.data.data}
+							notificationMode={this.state.notification.data.mode}
 						/>
 					)}
 
@@ -218,25 +223,28 @@ export class Home extends Component<Props, State> {
 					</View>
 					<TouchableOpacity
 						style={styles.cashInButton}
-						onPress={() => this.setCashInModalVisible()}>
+						onPress={() => {
+							this.setCashInModalVisible();
+						}}>
 						<View>
 							<Text style={styles.cashInText}>CASH IN</Text>
 						</View>
 					</TouchableOpacity>
-					{this.state.isCashinModalVisible && (
-						<CashInModal
-							rule={this.findRuleForCashIn()}
-							isVisible={this.state.isCashinModalVisible}
-							closeModal={this.setCashInModalVisible}
-							cashInConfirm={() =>
-								this.props.handleCashInSuccess(
-									this.props.currentUser,
-									this.props.playerTwo.pushToken,
-									this.findRuleForCashIn()
-								)
-							}
-						/>
-					)}
+					{this.state.isCashinModalVisible &&
+						this.props.currentUser.points > 0 && (
+							<CashInModal
+								rule={this.findRuleForCashIn()}
+								isVisible={this.state.isCashinModalVisible}
+								closeModal={this.setCashInModalVisible}
+								cashInConfirm={() =>
+									this.props.handleCashInSuccess(
+										this.props.currentUser,
+										this.props.playerTwo.pushToken,
+										this.findRuleForCashIn()
+									)
+								}
+							/>
+						)}
 				</View>
 			);
 		} else {
@@ -272,6 +280,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 		reason: any
 	) {
 		dispatch(Actions.cashIn(currentPlayer, playerTwoPushToken, reason));
+	},
+	setCashInNotificationMode() {
+		dispatch(Actions.cashInNotificationMode('cashIn'));
 	}
 });
 
