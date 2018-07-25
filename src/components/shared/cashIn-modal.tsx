@@ -65,7 +65,7 @@ export const CashInModal = (props: Props) => {
 								<Text style={{ color: '#fff', fontWeight: 'bold' }}>Yes!</Text>
 							</View>
 						</TouchableOpacity>
-						<TouchableOpacity>
+						<TouchableOpacity onPress={() => closeModal()}>
 							<View
 								style={{
 									borderColor: '#FF4E50',
