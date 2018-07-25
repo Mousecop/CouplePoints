@@ -3,3 +3,4 @@ export const GET_CURRENT_USER_ERROR = 'GET_CURRENT_USER_ERROR';
 export const GET_PLAYER_TWO_SUCESS = 'GET_PLAYER_TWO_SUCESS';
 export const GET_GAME = 'GET_GAME';
 export const SUBMIT_POINT = 'SUBMIT_POINT';
+export const CASH_IN = 'CASH_IN';
