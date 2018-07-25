@@ -128,34 +128,34 @@ export const cashIn = (
 	currentPlayer: any,
 	playerTwoPushToken: string,
 	reason: any
-) => (dispatch: any) => {
+) => async (dispatch: any) => {
 	// User cashes in, need to update firebase with 0 points for currentUser,
 	// notify playerTwo of Cash IN details
-
-	console.log('CASH IN ACTION', currentPlayer);
-	firebase
-		.database()
-		.ref('users/' + currentPlayer.playerId)
-		.update({ points: 0 })
-		.then(() => {
-			fetch('https://exp.host/--/api/v2/push/send', {
-				method: 'POST',
-				headers: {
-					Accept: 'application/json',
-					'Accept-Encoding': 'gzip, deflate',
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					to: playerTwoPushToken,
-					badge: 1,
-					title: `${currentPlayer.firstName} just cashed in!`,
-					body: `${reason.rule}`,
-					data: { data: reason.rule, mode: 'cashIn' },
-					priority: 'high'
-				})
+	console.log('currentPlayer', currentPlayer);
+	await fetch('https://exp.host/--/api/v2/push/send', {
+		method: 'POST',
+		headers: {
+			Accept: 'application/json',
+			'Accept-Encoding': 'gzip, deflate',
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({
+			to: playerTwoPushToken,
+			badge: 1,
+			title: `${currentPlayer.firstName} just cashed in!`,
+			body: `${reason.rule}`,
+			data: { data: reason.rule, mode: 'cashIn', points: currentPlayer.points },
+			priority: 'high'
+		})
+	}).then(() => {
+		firebase
+			.database()
+			.ref('users/' + currentPlayer.playerId)
+			.update({ points: 0 })
+			.then(() => {
+				dispatch(cashInNotificationMode('cashIn'));
 			});
-			dispatch(cashInNotificationMode('cashIn'));
-		});
+	});
 };
 
 // Sync actions here:
