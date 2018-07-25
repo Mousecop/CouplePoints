@@ -28,6 +28,7 @@ export interface Props {
 	game: types.Game;
 	currentUser: types.User;
 	playerTwo: types.User;
+	setSubmitNotificationMode: any;
 }
 
 export interface DispatchProps {
@@ -82,7 +83,10 @@ export class SubmitPoint extends Component<Props, State> {
 		return (
 			<View>
 				<TouchableOpacity
-					onPress={() => this.setModalVisible(!this.state.isModalVisible)}>
+					onPress={() => {
+						this.setModalVisible(!this.state.isModalVisible);
+						// this.props.setSubmitNotificationMode();
+					}}>
 					<Ionicons name="ios-add-circle-outline" size={27} color="#fff" />
 				</TouchableOpacity>
 				{this.state.isModalVisible && (
@@ -153,7 +157,8 @@ export class SubmitPoint extends Component<Props, State> {
 const mapStateToProps = (state: BaseState) => ({
 	game: state.game,
 	currentUser: state.currentUser,
-	playerTwo: state.playerTwo
+	playerTwo: state.playerTwo,
+	notificationMode: state.notificationMode
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -164,6 +169,9 @@ const mapDispatchToProps = (dispatch: any) => ({
 		reason: string
 	) {
 		dispatch(actions.submitPoint(gameId, receivingPlayerId, pushToken, reason));
+	},
+	setSubmitNotificationMode() {
+		dispatch(actions.submitNotificationMode('submitPoint'));
 	}
 });
 
