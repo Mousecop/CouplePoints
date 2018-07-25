@@ -17,6 +17,7 @@ import { BaseState } from '../../reducers/reducer';
 import * as Actions from '../../actions/action';
 import * as types from '../../types/type';
 import { NotificationModal } from '../shared/notification-modal';
+import { CashInModal } from '../shared/cashIn-modal';
 // Get dimensions
 const deviceHeight = Dimensions.get('screen').height;
 const deviceWidth = Dimensions.get('screen').width;
@@ -26,9 +27,11 @@ export interface Props {
 	getCurrentUser: Function;
 	getPlayerTwo: Function;
 	getGame: Function;
+	handleCashInSuccess: Function;
 	game: types.Game;
 	currentUser: types.User;
 	playerTwo: types.User;
+	notificationMode: string;
 }
 
 export interface State {
@@ -70,11 +73,11 @@ export class Home extends Component<Props, State> {
 
 	componentDidMount() {
 		if (this.props.currentUser) {
-			Notifications.addListener(this._handleNotification);
+			Notifications.addListener(this._handleNotificationModal);
 		}
 	}
 
-	_handleNotification = (notification: any) => {
+	_handleNotificationModal = (notification: any) => {
 		this.setState({
 			notification: notification,
 			isNotificationModalVisible: true
@@ -160,6 +163,22 @@ export class Home extends Component<Props, State> {
 		});
 	};
 
+	setCashInModalVisible = () => {
+		this.setState({
+			isCashinModalVisible: !this.state.isCashinModalVisible
+		});
+	};
+
+	findRuleForCashIn = () => {
+		if (this.props.game.rules) {
+			return this.props.game.rules.find(
+				x => x.id === this.props.currentUser.points
+			);
+		} else {
+			return 'No rule found';
+		}
+	};
+
 	render() {
 		console.log('GAME:', this.props.game);
 		if (this.props.game && this.props.currentUser) {
@@ -169,10 +188,13 @@ export class Home extends Component<Props, State> {
 						<NotificationModal
 							reason={this.state.notification.data.data}
 							playerTwo={this.props.playerTwo}
+							currentUser={this.props.currentUser}
 							isVisible={this.state.isNotificationModalVisible}
 							closeModal={this.setNotificationModalVisible}
+							notificationMode={this.props.notificationMode}
 						/>
 					)}
+
 					<View style={{ marginBottom: 40 }}>
 						<Text style={styles.gameNameText}>{this.props.game.gameName}</Text>
 					</View>
@@ -194,11 +216,27 @@ export class Home extends Component<Props, State> {
 							{this.renderPoints()}
 						</ScrollView>
 					</View>
-					<TouchableOpacity style={styles.cashInButton}>
+					<TouchableOpacity
+						style={styles.cashInButton}
+						onPress={() => this.setCashInModalVisible()}>
 						<View>
 							<Text style={styles.cashInText}>CASH IN</Text>
 						</View>
 					</TouchableOpacity>
+					{this.state.isCashinModalVisible && (
+						<CashInModal
+							rule={this.findRuleForCashIn()}
+							isVisible={this.state.isCashinModalVisible}
+							closeModal={this.setCashInModalVisible}
+							cashInConfirm={() =>
+								this.props.handleCashInSuccess(
+									this.props.currentUser,
+									this.props.playerTwo.pushToken,
+									this.findRuleForCashIn()
+								)
+							}
+						/>
+					)}
 				</View>
 			);
 		} else {
@@ -214,7 +252,8 @@ export class Home extends Component<Props, State> {
 const mapStateToProps = (state: BaseState) => ({
 	currentUser: state.currentUser,
 	playerTwo: state.playerTwo,
-	game: state.game
+	game: state.game,
+	notificationMode: state.notificationMode
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
@@ -226,6 +265,13 @@ const mapDispatchToProps = (dispatch: any) => ({
 	},
 	getGame() {
 		dispatch(Actions.getGame());
+	},
+	handleCashInSuccess(
+		currentPlayer: any,
+		playerTwoPushToken: any,
+		reason: any
+	) {
+		dispatch(Actions.cashIn(currentPlayer, playerTwoPushToken, reason));
 	}
 });
 
