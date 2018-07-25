@@ -12,7 +12,7 @@ export const getCurrentUser = () => async (dispatch: any) => {
 		.on('value', snapshot => {
 			const user = snapshot.val();
 			if (user) {
-				return dispatch(getCurrentUserSucess({ ...user, playeId: userToken }));
+				return dispatch(getCurrentUserSucess({ ...user, playerId: userToken }));
 			}
 		});
 };
@@ -102,6 +102,7 @@ export const submitPoint = (
 						.ref('users/' + receivingPlayerId)
 						.update({ points: user.points + 1 })
 						.then(() => {
+							dispatch(submitPointSucess(reason));
 							fetch('https://exp.host/--/api/v2/push/send', {
 								method: 'POST',
 								headers: {
@@ -119,10 +120,40 @@ export const submitPoint = (
 								})
 							});
 						});
-				})
-				.then(() => {
-					dispatch(submitPointSucess(reason));
 				});
+		});
+};
+
+export const cashIn = (
+	currentPlayer: any,
+	playerTwoPushToken: string,
+	reason: any
+) => (dispatch: any) => {
+	// User cashes in, need to update firebase with 0 points for currentUser,
+	// notify playerTwo of Cash IN details
+	dispatch(cashInSuccess());
+	console.log('CASH IN ACTION', currentPlayer);
+	firebase
+		.database()
+		.ref('users/' + currentPlayer.playerId)
+		.update({ points: 0 })
+		.then(() => {
+			fetch('https://exp.host/--/api/v2/push/send', {
+				method: 'POST',
+				headers: {
+					Accept: 'application/json',
+					'Accept-Encoding': 'gzip, deflate',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					to: playerTwoPushToken,
+					badge: 1,
+					title: `${currentPlayer.firstName} just cashed in!`,
+					body: `${reason.rule}`,
+					data: { data: reason.rule },
+					priority: 'high'
+				})
+			});
 		});
 };
 
@@ -145,4 +176,8 @@ export const getGameSuccess = (game: Object) => ({
 export const submitPointSucess = (data: any) => ({
 	type: actionType.SUBMIT_POINT,
 	data
+});
+
+export const cashInSuccess = () => ({
+	type: actionType.CASH_IN
 });
