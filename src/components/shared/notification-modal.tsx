@@ -17,6 +17,7 @@ export interface Props {
 	closeModal: any;
 	currentUser: User;
 	notificationMode: string;
+	cashInPlayerPoints: any;
 }
 
 export class NotificationModal extends Component<Props, {}> {
@@ -25,6 +26,7 @@ export class NotificationModal extends Component<Props, {}> {
 	}
 
 	renderText = () => {
+		console.log(this.props.cashInPlayerPoints);
 		if (this.props.notificationMode === 'submitPoint') {
 			return (
 				<Text style={{ fontSize: 16, paddingBottom: 10 }}>
@@ -35,8 +37,8 @@ export class NotificationModal extends Component<Props, {}> {
 		} else {
 			return (
 				<Text style={{ fontSize: 16, paddingBottom: 10 }}>
-					{this.props.currentUser.firstName} just cashed in{' '}
-					{this.props.currentUser.points} point{this.props.currentUser.points >
+					{this.props.playerTwo.firstName} just cashed in{' '}
+					{this.props.cashInPlayerPoints} point{this.props.cashInPlayerPoints >
 					1
 						? 's'
 						: ''}!
