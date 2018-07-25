@@ -35,7 +35,7 @@ const initalState: BaseState = {
 		rules: [],
 		gameId: ''
 	},
-	notificationMode: 'cashIn'
+	notificationMode: ''
 };
 
 export const reducer = (state = initalState, action: any) => {
@@ -49,10 +49,12 @@ export const reducer = (state = initalState, action: any) => {
 		case actions.GET_GAME:
 			console.log('ACTION GAME:', action.game);
 			return { ...state, game: action.game };
-		case actions.SUBMIT_POINT:
-			return { ...state, notificationMode: 'submitPoint' };
-		case actions.CASH_IN:
-			return { ...state, notificationMode: 'cashIn' };
+		case actions.SUBMIT_NOTIFICATION_MODE:
+			console.log('SUBMIT MODE ACTIVATED', action.mode);
+			return { ...state, notificationMode: action.mode };
+		case actions.CASH_IN_NOTIFICATION_MODE:
+			console.log('CASH IN MODE ACTIVATED', action.mode);
+			return { ...state, notificationMode: action.mode };
 		default:
 			return state;
 	}
